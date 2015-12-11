@@ -24,6 +24,7 @@ class DistanceSensorCalibration
 		distance_pub = n.advertise<nord_messages::DistanceCalibration>("/distance_sensor_test_node/distance", 1);
 		adc_sub = n.subscribe("/arduino/adc", 1,&DistanceSensorCalibration::adcMsgCallback, this);
 		distance = 0; counter = 0;
+
 		adc1 = 0; adc2 = 0; adc3 = 0; adc4 = 0;
 		adc5 = 0; adc6 = 0; adc7 = 0; adc8 = 0;
 	}
@@ -49,29 +50,30 @@ class DistanceSensorCalibration
 		output.adc_3 = adc3; output.adc_4 = adc4;
 		output.adc_5 = adc5; output.adc_6 = adc6;
 		output.adc_7 = adc7; output.adc_8 = adc8;
-		//print_info();
-		/*counter +=1;
+		print_info();
+		counter +=1;
 
-		if(counter>20){
+		if(counter>30){
 			distance += 5;
 			counter   = 0;
 			ros::Duration(6).sleep();
 		}
-*/
+
 		distance_pub.publish(output);
-		/*if(distance > 80){
+		if(distance > 80){
 			distance = 0;
-		}*/
+		}
 	}
 
 	void print_info(){
+		ROS_INFO("Distance: %d ", distance);
 		ROS_INFO("Rfront: [%d]  Rback: [%d]", adc8,adc7);
 		ROS_INFO("Lfront: [%d]  Lback: [%d]", adc1,adc3);
-		ROS_INFO("Front: [%d]  Back: [%d]", adc6,adc5);
+		ROS_INFO(" Front: [%d]   Back: [%d]", adc6,adc5);
 	}
 
 	private:
-		double distance;    int counter;
+		int distance;    int counter;
 		 unsigned int short adc1;	 unsigned int short adc2;
 		 unsigned int short adc3;	 unsigned int short adc4;
 		 unsigned int short adc5;  	 unsigned int short adc6;
@@ -88,7 +90,7 @@ class DistanceSensorCalibration
 	
 	
 	DistanceSensorCalibration calib_obj;
-	ros::Rate loop_rate(10);
+	ros::Rate loop_rate(20);
 
 
 	// ~ while everything is running as it should
